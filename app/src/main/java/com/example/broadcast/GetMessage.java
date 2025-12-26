@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
+import android.media.MediaParser;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -19,7 +21,7 @@ import okhttp3.Response;
 
 public class GetMessage extends Service {
     OkHttpClient client = new OkHttpClient();
-
+    MediaPlayer mediaPlayer=MediaPlayer.create(this,R.raw.alert);
     @Override
     public void onCreate() {
         super.onCreate();
@@ -48,9 +50,7 @@ public class GetMessage extends Service {
                             Thread.sleep(3000);
                         }
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                } catch (InterruptedException e) {
+                } catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
@@ -58,13 +58,15 @@ public class GetMessage extends Service {
         return START_STICKY;
     }
 
-    boolean getMessageFromServer(String channel) throws IOException {
+    void getMessageFromServer(String channel) throws IOException {
+        mediaPlayer.start();
         Request request = new Request.Builder()
                 .url("http://10.21.162.203:45267/" + channel + ".txt")
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            FileHelper.write(this, "message.txt", response.body().string(), 0);
-            return true;
+            if(!response.isSuccessful())FileHelper.write(this, "message.txt", "failed#&#&failed#&#&failed#&#&3#&#&failed", 0);
+            if(response.code()==404)FileHelper.write(this, "message.txt", "channel not found#&#&failed#&#&failed#&#&3#&#&failed", 0);
+            else FileHelper.write(this, "message.txt", response.body().string(), 0);
         }
     }
 

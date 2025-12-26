@@ -61,24 +61,14 @@ public class MainActivity extends AppCompatActivity {
         else startService(new Intent(this, GetMessage.class));
 
         Handler handler=new Handler(Looper.getMainLooper());
-        new Thread(new Runnable() {
+        Runnable runnable=new Runnable() {
             @Override
             public void run() {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
-                            getMessage();
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                });
+                getMessage();
+                handler.postDelayed(this,1000);
             }
-        }).start();
+        };
+        handler.post(runnable);
     }
 
     //This function add a message into the whole message_container
@@ -116,8 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void commit(View v) {
-        FileHelper.write(this, "channel.txt", chan.getText().toString(), 0);
-        hi(this,FileHelper.read(this, "channel.txt").substring(0,4),0);
+        FileHelper.write(this, "channel.txt", chan.getText().toString().substring(0,4), 0);
     }
 
     //this function is to get the files from phone and get the messages from the files
@@ -127,11 +116,13 @@ public class MainActivity extends AppCompatActivity {
         String[] allOrder = FileHelper.read(this, "order.txt").split("#&#&");
         int t = 1;
         for (String i : all) {
+            String[] tem=i.split("#&#&");
+            if(tem.length!=5)continue;
             if (!find(allOrder, String.valueOf(t))) {
                 Intent hha = new Intent(MainActivity.this, Details.class);
                 hha.putExtra("details", i);
                 hha.putExtra("order", String.valueOf(t));
-                add_message(i.split("#&#&")[0], i.split("#&#&")[3], hha);
+                add_message(tem[0], tem[3], hha);
             }
             t++;
         }
