@@ -38,7 +38,7 @@ public class GetMessage extends Service {
 
     @Override
     public int onStartCommand(Intent i, int d, int s) {
-        Notification n = new NotificationCompat.Builder(this, "foreground_haha").setContentTitle("running").setContentText("this is a service").setSmallIcon(R.drawable.noti).setOngoing(true).build();
+        Notification n = new NotificationCompat.Builder(this, "foreground_haha").setContentTitle("Click to view message").setContentText("Receiving data").setSmallIcon(R.drawable.noti).setOngoing(true).build();
         startForeground(1, n);
         new Thread(new Runnable() {
             @Override

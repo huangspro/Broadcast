@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
             startForegroundService(new Intent(this, GetMessage.class));
         else startService(new Intent(this, GetMessage.class));
 
-        Handler handler=new Handler(Looper.getMainLooper());
-        Runnable runnable=new Runnable() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 getMessage();
-                handler.postDelayed(this,1000);
+                handler.postDelayed(this, 1000);
             }
         };
         handler.post(runnable);
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void commit(View v) {
-        FileHelper.write(this, "channel.txt", chan.getText().toString().substring(0,4), 0);
+        FileHelper.write(this, "channel.txt", chan.getText().toString().substring(0, 4), 0);
     }
 
     //this function is to get the files from phone and get the messages from the files
@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
         String[] allOrder = FileHelper.read(this, "order.txt").split("#&#&");
         int t = 1;
         for (String i : all) {
-            String[] tem=i.split("#&#&");
-            if(tem.length!=5)continue;
+            String[] tem = i.split("#&#&");
+            if (tem.length != 5) continue;
             if (!find(allOrder, String.valueOf(t))) {
                 Intent hha = new Intent(MainActivity.this, Details.class);
                 hha.putExtra("details", i);
@@ -139,12 +139,17 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public void hi(Context c, String a,int mode) {
-        Toast.makeText(c, a, mode==0?Toast.LENGTH_SHORT:Toast.LENGTH_LONG).show();
+    public void hi(Context c, String a, int mode) {
+        Toast.makeText(c, a, mode == 0 ? Toast.LENGTH_SHORT : Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    public void sendto(View v) {
+        Intent Sendpage = new Intent(MainActivity.this, SendMessage.class);
+        startActivity(Sendpage);
     }
 }
