@@ -49,7 +49,8 @@ public class GetMessage extends Service {
                     while (true) {
                         if (!FileHelper.read(GetMessage.this, "channel.txt").substring(0,4).equals("") && !FileHelper.read(GetMessage.this, "channel.txt").substring(0,4).equals("not exist")) {
                             getMessageFromServer(FileHelper.read(GetMessage.this, "channel.txt").substring(0,4));
-                            Thread.sleep(3000);
+                            if(mediaPlayer.isPlaying()){Thread.sleep(10000);mediaPlayer.stop();}
+                            else Thread.sleep(3000);
                         }
                     }
                 } catch (IOException | InterruptedException e) {
@@ -65,9 +66,13 @@ public class GetMessage extends Service {
                 .url("http://10.21.162.203:45267/" + channel + ".txt")
                 .build();
         try (Response response = client.newCall(request).execute()) {
+            String res=response.body().string();
             if(!response.isSuccessful())FileHelper.write(this, "message.txt", "failed#&#&failed#&#&failed#&#&3#&#&failed", 0);
             if(response.code()==404)FileHelper.write(this, "message.txt", "channel not found#&#&failed#&#&failed#&#&3#&#&failed", 0);
-            else FileHelper.write(this, "message.txt", response.body().string(), 0);
+            else FileHelper.write(this, "message.txt", res, 0);
+            if(res.contains("#&#&3#&#&")){
+                if(!mediaPlayer.isPlaying())mediaPlayer.start();
+            }
         }
     }
 
