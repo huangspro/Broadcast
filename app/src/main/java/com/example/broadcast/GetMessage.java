@@ -21,11 +21,13 @@ import okhttp3.Response;
 
 public class GetMessage extends Service {
     OkHttpClient client = new OkHttpClient();
-    MediaPlayer mediaPlayer=MediaPlayer.create(this,R.raw.alert);
+    MediaPlayer mediaPlayer;
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel();
+        mediaPlayer=MediaPlayer.create(this,R.raw.alert);
+        mediaPlayer.setLooping(true);
     }
 
     private void createNotificationChannel() {
@@ -59,7 +61,6 @@ public class GetMessage extends Service {
     }
 
     void getMessageFromServer(String channel) throws IOException {
-        mediaPlayer.start();
         Request request = new Request.Builder()
                 .url("http://10.21.162.203:45267/" + channel + ".txt")
                 .build();
@@ -73,6 +74,9 @@ public class GetMessage extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mediaPlayer.stop();
+        mediaPlayer.release();
+        mediaPlayer=null;
     }
 
     @Nullable
