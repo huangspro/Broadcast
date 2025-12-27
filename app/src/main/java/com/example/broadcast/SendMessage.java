@@ -90,7 +90,7 @@ public class SendMessage extends AppCompatActivity {
 
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        runOnUiThread(() -> Toast.makeText(SendMessage.this, Title + "#&#&" + Name + "#&#&" + Time + "#&#&" + Importance + "#&#&" + Content + "<hhf>", Toast.LENGTH_LONG).show());
+                        runOnUiThread(() -> Toast.makeText(SendMessage.this, "successful", Toast.LENGTH_LONG).show());
                         finish();
                     }
                 });
